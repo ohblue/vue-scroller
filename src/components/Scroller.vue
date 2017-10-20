@@ -18,7 +18,7 @@
 
           <span v-if="state == 2">
             <slot name="refresh-spinner">
-              <spinner :style="{fill: refreshLayerColor, stroke: refreshLayerColor}"></spinner>
+              <spinner-up :style="{fill: refreshLayerColor, stroke: refreshLayerColor}"></spinner-up>
             </slot>
           </span>
         </span>
@@ -29,12 +29,12 @@
       <div v-if="showInfiniteLayer" class="loading-layer">
         <span class="spinner-holder" :class="{'active': showLoading}">
           <slot name="infinite-spinner">
-            <spinner :style="{fill: loadingLayerColor, stroke: loadingLayerColor}"></spinner>
+            <spinner-down :style="{fill: loadingLayerColor, stroke: loadingLayerColor}"></spinner-down>
           </slot>
         </span>
 
         <div class="no-data-text"
-          :class="{'active': !showLoading && loadingState == 2}" :style="{color: loadingLayerColor}" 
+          :class="{'active': !showLoading && loadingState == 2}" :style="{color: loadingLayerColor}"
           v-text="noDataText">
         </div>
       </div>
@@ -86,7 +86,7 @@
 
   ._v-container > ._v-content > .loading-layer {
     width: 100%;
-    height: 60px;
+    height: 0px;
     text-align: center;
     font-size: 16px;
     line-height: 60px;
@@ -163,7 +163,8 @@
 <script>
   import Scroller from '../module/core'
   import getContentRender from '../module/render'
-  import Spinner from './Spinner.vue'
+  import SpinnerUp from './SpinnerUp.vue'
+  import SpinnerDown from './SpinnerDown.vue'
   import Arrow from './Arrow.vue'
 
   const re = /^[\d]+(\%)?$/
@@ -179,7 +180,8 @@
 
   export default {
     components: {
-      Spinner,
+      SpinnerUp,
+      SpinnerDown,
       Arrow
     },
 
@@ -267,7 +269,7 @@
       },
 
       showInfiniteLayer () {
-        let contentHeight = 0 
+        let contentHeight = 0
         this.content
           ? contentHeight = this.content.offsetHeight
           : void 666
@@ -345,8 +347,8 @@
         this.infiniteTimer = setInterval(() => {
           let {left, top, zoom} = this.scroller.getValues()
 
-          // 在 keep alive 中 deactivated 的组件长宽变为 0 
-          if (this.content.offsetHeight > 0 && 
+          // 在 keep alive 中 deactivated 的组件长宽变为 0
+          if (this.content.offsetHeight > 0 &&
             top + 60 > this.content.offsetHeight - this.container.clientHeight) {
             if (this.loadingState) return
             this.loadingState = 1
@@ -375,7 +377,7 @@
       }
 
       let { content_width, content_height } = contentSize()
-      
+
       this.resizeTimer = setInterval(() => {
         let {width, height} = contentSize()
         if (width !== content_width || height !== content_height) {
